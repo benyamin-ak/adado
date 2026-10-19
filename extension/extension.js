@@ -257,19 +257,25 @@ export default class AdadoExtension extends Extension {
             primary: await this._getText(PRIMARY),
         };
 
-        let selection = cfg.readPrimary ? snapshot.primary : null;
-        let injectedCopy = false;
+        let selection = null;
 
-        if (!selection || selection === '') {
-            const isTerminal = TERMINALS.has(wmClass.toLowerCase());
-            this._press(Clutter.KEY_c, isTerminal
-                ? [Clutter.KEY_Control_L, Clutter.KEY_Shift_L]
-                : [Clutter.KEY_Control_L]);
-            injectedCopy = true;
-            await this._delay(cfg.copyDelayMs);
-            selection = await this._getText(CLIPBOARD);
-            // An unchanged clipboard means the app had nothing selected.
-            if (selection !== null && selection === snapshot.clipboard)
+        // Ask the app directly first. Reading PRIMARY first would be cheaper,
+        // but PRIMARY is a snapshot of whatever was selected last -- in an app
+        // that never publishes it, that is stale text, and pasting it over the
+        // user's real selection would destroy their work.
+        const isTerminal = TERMINALS.has(wmClass.toLowerCase());
+        this._press(Clutter.KEY_c, isTerminal
+            ? [Clutter.KEY_Control_L, Clutter.KEY_Shift_L]
+            : [Clutter.KEY_Control_L]);
+        await this._delay(cfg.copyDelayMs);
+        selection = await this._getText(CLIPBOARD);
+
+        // An unchanged clipboard means either "nothing was selected" or "this
+        // app does not implement that chord". PRIMARY can still be current in
+        // the latter case, so fall back to it rather than giving up.
+        if (selection === snapshot.clipboard) {
+            selection = cfg.readPrimary && snapshot.primary ? snapshot.primary : null;
+            if (selection === snapshot.clipboard)
                 selection = null;
         }
 
@@ -278,10 +284,10 @@ export default class AdadoExtension extends Extension {
             : preparePaste(selection);
 
         if (prepared === null) {
-            // Nothing to convert. Undo any damage the injected copy did, then
-            // stay silent so the selection and the undo stack are untouched.
-            if (injectedCopy)
-                this._restore(snapshot, cfg.restoreDelayMs);
+            // Nothing to convert. The copy keystroke we injected may still have
+            // overwritten the clipboard, so put it back, then stay silent so
+            // the selection and the undo stack are untouched.
+            this._restore(snapshot, cfg.restoreDelayMs);
             return;
         }
 

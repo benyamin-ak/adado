@@ -1,0 +1,59 @@
+{
+  "name": "adado",
+  "version": "0.1.0",
+  "description": "Press one hotkey to convert Arabic-Indic and Persian digits in your selection to ASCII digits, in any editor.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "bin": {
+    "adado": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "extension/metadata.json",
+    "extension/extension.js",
+    "extension/schemas",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:extension": "node scripts/generate-extension-mapping.mjs",
+    "test": "node --test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run build:extension && npm run build"
+  },
+  "keywords": [
+    "arabic",
+    "persian",
+    "farsi",
+    "digits",
+    "numbers",
+    "wayland",
+    "hotkey",
+    "clipboard",
+    "editor",
+    "نرم‌افزار",
+    "اعداد"
+  ],
+  "author": "Benyamin Akbari <b3nyamin1999@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benyamin-ak/adado.git"
+  },
+  "optionalDependencies": {
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^5.9.0"
+  }
+}

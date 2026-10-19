@@ -1,0 +1,9 @@
+{
+  "uuid": "adado@benyamin-ak.github.io",
+  "name": "adado",
+  "description": "Convert Arabic-Indic and Persian digits in your selection to ASCII digits.",
+  "shell-version": ["49", "50"],
+  "version": 1,
+  "settings-schema": "org.gnome.shell.extensions.adado",
+  "gettext-domain": "adado"
+}

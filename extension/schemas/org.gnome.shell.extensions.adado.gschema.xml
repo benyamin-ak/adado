@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.adado" path="/org/gnome/shell/extensions/adado/">
+    <key name="hotkey" type="s">
+      <default>'&lt;Ctrl&gt;&lt;Shift&gt;j'</default>
+      <summary>Convert hotkey</summary>
+      <description>
+        Keyboard shortcut that converts Arabic-Indic and Persian digits in the
+        focused window's selection to ASCII digits. This must live in GSettings
+        because GNOME only grants global bindings declared in a schema; the
+        JSON config file mirrors it here.
+      </description>
+    </key>
+  </schema>
+</schemalist>
